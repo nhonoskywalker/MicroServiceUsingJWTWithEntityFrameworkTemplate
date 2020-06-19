@@ -1,7 +1,7 @@
 ﻿namespace BusinessCard.Insfrastructure.Data
 {
     using BusinessCard.Data.Entities.Badges;
-    using BusinessCard.Insfrastructure.Entities;
+    using BusinessCard.Data.Entities.BusinessCards;
     using Microsoft.EntityFrameworkCore;
 
     public interface IAppDbContext
