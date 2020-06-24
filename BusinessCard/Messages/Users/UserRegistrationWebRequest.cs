@@ -18,5 +18,13 @@
         [EmailAddress]
         [Required]
         public string Email { get; set; }
+
+        [JsonProperty("firstname")]
+        [Required, MinLength(5)]
+        public string FirstName { get; set; }
+
+        [JsonProperty("lastname")]
+        [Required, MinLength(5)]
+        public string LastName { get; set; }
     }
 }

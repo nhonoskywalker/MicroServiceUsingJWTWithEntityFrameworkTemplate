@@ -6,23 +6,18 @@
 
     public class UserEntity : IdentityUser<Guid>
     {
-        [Required]
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
-        [Required]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
-        [Required]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
-        [Required]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
-        public Guid CountryId { get; set; }
+        public Guid? CountryId { get; set; }
 
-        [Required]
-        public DateTime LastLogInDate { get; set; }
+        public DateTime? LastLogInDate { get; set; }
     }
 }

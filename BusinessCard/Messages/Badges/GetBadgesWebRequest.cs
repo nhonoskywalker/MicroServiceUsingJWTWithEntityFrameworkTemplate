@@ -1,9 +1,9 @@
 ﻿namespace BusinessCard.Messages.Badges
 {
     using DtiTriviaGame.Messages;
-    using Newtonsoft.Json;
-    using System.ComponentModel.DataAnnotations;
+    using System.Runtime.Serialization;
 
+    [DataContract]
     public class GetBadgesWebRequest : WebRequest
     {
       

@@ -15,5 +15,11 @@
         [DataMember]
         public string Password;
 
+        [DataMember]
+        public string FirstName;
+
+        [DataMember]
+        public string LastName;
+
     }
 }

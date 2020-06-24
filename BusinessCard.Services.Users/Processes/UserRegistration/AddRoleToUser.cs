@@ -2,10 +2,10 @@
 {
     using BusinessCard.Insfrastructure.Messages.UserRegistration;
     using BusinessCard.Insfrastructure.Processes;
-    using System;
+    using BusinessCard.Services.Users.Enums;
     using System.Threading.Tasks;
 
-    public class AddRoleToUser : IProcessStep<UserRegistrationResponse>
+    public class AddRoleToUser : ProcessStep<UserRegistrationResponse>
     {
         private readonly UserRegistrationContext userRegistrationContext;
 
@@ -14,9 +14,8 @@
             this.userRegistrationContext = userRegistrationContext;
         }
 
-        public IProcessStep<UserRegistrationResponse> Next { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public async Task ProcessAsync()
+        public override async Task ProcessAsync()
         {
             var userManager = userRegistrationContext.UserManager;
             var request = userRegistrationContext.Request;
@@ -26,25 +25,15 @@
 
             if (identityResult.Succeeded)
             {
-                await this.Next.ProcessAsync();
+                if (this.Next != null)
+                    await this.Next.ProcessAsync();
             }
             else
             {
-               //error
+                userRegistrationContext.Result.SetError((int)StatusCodes.AddRoleFailed);
             }
 
         }
 
-        public void SetNext(IProcessStep<UserRegistrationResponse> step)
-        {
-            if (this.Next == null)
-            {
-                this.Next = step;
-            }
-            else
-            {
-                this.Next.SetNext(step);
-            }
-        }
     }
 }

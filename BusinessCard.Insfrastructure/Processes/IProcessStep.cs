@@ -6,8 +6,6 @@
     {
         Task ProcessAsync();
 
-        IProcessStep<TResult> Next { get; set; }
-
         void SetNext(IProcessStep<TResult> step);
 
     }

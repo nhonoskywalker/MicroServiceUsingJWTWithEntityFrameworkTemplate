@@ -3,26 +3,23 @@
     using BusinessCard.Data.Entities.Users;
     using BusinessCard.Insfrastructure.Messages.LogIn;
     using BusinessCard.Insfrastructure.Processes;
+    using BusinessCard.Services.Authentication.Processes.Enums;
     using BusinessCard.Services.AuthToken;
     using Microsoft.AspNetCore.Identity;
     using System.Threading.Tasks;
 
     public class LogInContext : ProcessContext<LogInResponse>
     {
-        public LogInContext()
+        public LogInContext(LogInRequest request, ITokenService tokenService, UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager)
         {
-
-        }
-
-        public LogInContext(LogInRequest logInRequest, LogInResponse logInResponse, UserManager<UserEntity> userManager, 
-            SignInManager<UserEntity> signInManager, ITokenService tokenService)
-        {
-            this.Result = logInResponse;
-            this.Request = logInRequest;
+            this.Result = new LogInResponse();
+            this.Request = request;
             this.UserManager = userManager;
             this.SignInManager = signInManager;
             this.TokenService = tokenService;
         }
+
+     
 
         public LogInRequest Request { get; private set; }
 
@@ -34,6 +31,8 @@
 
         public override async Task<LogInResponse> ProcessAsync()
         {
+            this.Result.StatusCode = (int)StatusCodes.LogInSuccess;
+
             var logIn = new LogIn(this);
             logIn.SetNext(new CreateUserToken(this));
 

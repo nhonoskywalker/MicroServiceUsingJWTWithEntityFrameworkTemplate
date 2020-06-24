@@ -37,7 +37,7 @@
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
-
+          
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),

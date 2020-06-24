@@ -3,7 +3,7 @@
     using Microsoft.AspNetCore.Identity;
     using System;
 
-    public class UserRoleEntity : IdentityUserRole<Guid>
+    public class UserRolesEntity : IdentityUserRole<Guid>
     {
     }
 }

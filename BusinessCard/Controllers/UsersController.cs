@@ -2,6 +2,7 @@
 {
     using BusinessCard.Extensions;
     using BusinessCard.Extensions.Messages;
+    using BusinessCard.Filters;
     using BusinessCard.Messages.Users;
     using BusinessCard.Services.Users;
     using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,7 @@
             this.userService = userService;
         }
 
+        [ServiceFilter(typeof(LogExceptionAttribute))]
         [HttpPost]
         [Route("register")]
         [AllowAnonymous]

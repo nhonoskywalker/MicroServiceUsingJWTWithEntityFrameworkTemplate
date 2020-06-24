@@ -11,7 +11,9 @@
             {
                 Username = request.UserName,
                 Password = request.Password,
-                Email = request.Email
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName
             };
 
             return result;

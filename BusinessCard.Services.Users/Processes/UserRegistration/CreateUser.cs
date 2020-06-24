@@ -3,10 +3,11 @@
     using BusinessCard.Data.Entities.Users;
     using BusinessCard.Insfrastructure.Messages.UserRegistration;
     using BusinessCard.Insfrastructure.Processes;
+    using BusinessCard.Services.Users.Enums;
     using System;
     using System.Threading.Tasks;
 
-    public class CreateUser : IProcessStep<UserRegistrationResponse>
+    public class CreateUser : ProcessStep<UserRegistrationResponse>
     {
         private readonly UserRegistrationContext userRegistrationContext;
 
@@ -15,9 +16,7 @@
             this.userRegistrationContext = userRegistrationContext;
         }
 
-        public IProcessStep<UserRegistrationResponse> Next { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public async Task ProcessAsync()
+        public override async Task ProcessAsync()
         {
             var request = userRegistrationContext.Request;
             var user = await userRegistrationContext.UserManager.FindByEmailAsync(request.Email);
@@ -27,8 +26,10 @@
                 var entity = new UserEntity {
                     UserName = request.Username,
                     Email = request.Email,
-                
+                    FirstName = request.FirstName,
+                    LastName = request.LastName
                 };
+
                 var identityResult = await userRegistrationContext.UserManager.CreateAsync(entity, request.Password);
 
                 if (identityResult.Succeeded)
@@ -37,25 +38,14 @@
                 }
                 else
                 {
-                    //error
+                    userRegistrationContext.Result.SetError((int)StatusCodes.RegistrationFailed);
                 }
             }
             else
             {
-                //error
+                userRegistrationContext.Result.SetError((int)StatusCodes.UserAlreadyExists);
             }
         }
 
-        public void SetNext(IProcessStep<UserRegistrationResponse> step)
-        {
-            if (this.Next == null)
-            {
-                this.Next = step;
-            }
-            else
-            {
-                this.Next.SetNext(step);
-            }
-        }
     }
 }

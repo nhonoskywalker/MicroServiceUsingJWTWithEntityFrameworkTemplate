@@ -4,6 +4,7 @@
     using BusinessCard.Extensions.Messages;
     using BusinessCard.Messages.Badges;
     using BusinessCard.Services.Badges;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
 
@@ -20,6 +21,7 @@
 
         [HttpGet]
         [Route("")]
+        [Authorize]
         public async Task<IActionResult> GetBadgesAsync([FromQuery] GetBadgesWebRequest request)
         {
             var result = await this.badgeService.GetBadges(request.AsRequest());
@@ -29,6 +31,7 @@
 
         [HttpGet]
         [Route("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetBadgeByIdAsync([FromRoute] GetBadgeByIdWebRequest request)
         {
             var result = await this.badgeService.GetBadgeById(request.AsRequest());

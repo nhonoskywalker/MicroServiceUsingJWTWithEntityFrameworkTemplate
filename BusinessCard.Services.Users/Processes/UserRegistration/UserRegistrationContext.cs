@@ -3,6 +3,7 @@
     using BusinessCard.Data.Entities.Users;
     using BusinessCard.Insfrastructure.Messages.UserRegistration;
     using BusinessCard.Insfrastructure.Processes;
+    using BusinessCard.Services.Users.Enums;
     using Microsoft.AspNetCore.Identity;
     using System.Threading.Tasks;
 
@@ -24,6 +25,8 @@
 
         public override async Task<UserRegistrationResponse> ProcessAsync()
         {
+            this.Result.StatusCode = (int)StatusCodes.RegistrationSuccess;
+
             var registerUser = new CreateUser(this);
             registerUser.SetNext(new AddRoleToUser(this));
 

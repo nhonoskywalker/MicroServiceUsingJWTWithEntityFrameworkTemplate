@@ -5,7 +5,7 @@
     using System;
     using System.Threading.Tasks;
 
-    class CreateUserToken : IProcessStep<LogInResponse>
+    class CreateUserToken : ProcessStep<LogInResponse>
     {
         private readonly LogInContext logInContext;
 
@@ -14,9 +14,7 @@
             this.logInContext = logInContext;
         }
 
-        public IProcessStep<LogInResponse> Next { get; set; }
-
-        public async Task ProcessAsync()
+        public override async Task ProcessAsync()
         {
             var result = logInContext.Result;
             var request = logInContext.Request;
@@ -28,21 +26,11 @@
 
             var token = tokenService.GenerateToken(user, roles);
 
-            await this.Next?.ProcessAsync();
+            if (this.Next != null)
+                await this.Next.ProcessAsync();
 
             result.Data = token;
         }
 
-        public void SetNext(IProcessStep<LogInResponse> step)
-        {
-            if (this.Next == null)
-            {
-                this.Next = step;
-            }
-            else
-            {
-                this.Next.SetNext(step);
-            }
-        }
     }
 }
