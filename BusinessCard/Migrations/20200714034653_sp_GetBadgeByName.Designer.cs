@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessCard.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200620082235_allow nulls")]
-    partial class allownulls
+    [Migration("20200714034653_sp_GetBadgeByName")]
+    partial class sp_GetBadgeByName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("ProductVersion", "3.1.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -75,9 +75,10 @@ namespace BusinessCard.Migrations
 
             modelBuilder.Entity("BusinessCard.Data.Entities.Users.RoleClaimEntity", b =>
                 {
-                    b.Property<Guid>("RoleId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -85,10 +86,12 @@ namespace BusinessCard.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("RoleId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("RoleClaims");
                 });
@@ -100,24 +103,33 @@ namespace BusinessCard.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserClaimEntity", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -125,10 +137,12 @@ namespace BusinessCard.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserClaims");
                 });
@@ -146,6 +160,7 @@ namespace BusinessCard.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("CountryId")
@@ -155,7 +170,8 @@ namespace BusinessCard.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -179,10 +195,12 @@ namespace BusinessCard.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -200,43 +218,54 @@ namespace BusinessCard.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserLoginEntity", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId");
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserLogins");
                 });
 
-            modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserRoleEntity", b =>
+            modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserRolesEntity", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId");
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
                 });
@@ -244,21 +273,71 @@ namespace BusinessCard.Migrations
             modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserTokenEntity", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens");
+                });
+
+            modelBuilder.Entity("BusinessCard.Data.Entities.Users.RoleClaimEntity", b =>
+                {
+                    b.HasOne("BusinessCard.Data.Entities.Users.RoleEntity", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserClaimEntity", b =>
+                {
+                    b.HasOne("BusinessCard.Data.Entities.Users.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserLoginEntity", b =>
+                {
+                    b.HasOne("BusinessCard.Data.Entities.Users.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserRolesEntity", b =>
+                {
+                    b.HasOne("BusinessCard.Data.Entities.Users.RoleEntity", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessCard.Data.Entities.Users.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BusinessCard.Data.Entities.Users.UserTokenEntity", b =>
+                {
+                    b.HasOne("BusinessCard.Data.Entities.Users.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

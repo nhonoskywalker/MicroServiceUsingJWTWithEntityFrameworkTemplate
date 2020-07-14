@@ -43,7 +43,9 @@ namespace BusinessCard
 
             var connectionString = this.Configuration.GetSection("DbConnectionString").Get<DbConnectionString>();
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString.Database));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString.Database)
+            .EnableSensitiveDataLogging(Configuration.GetValue<bool>("Logging:EnableSqlParameterLogging")));
+               
 
             services.AddScoped<IAppDbContext, ApplicationDbContext>();
             services.AddScoped<IBadgesRepository, BadgesRepository>();
